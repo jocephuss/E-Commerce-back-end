@@ -13,6 +13,7 @@ app.use(routes);
 
 // sync sequelize models to the database, then turn on the server
 sequelize.sync({ force: false }).then(() => {
+  // force: false will not drop the table if it already exists
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
