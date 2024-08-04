@@ -5,9 +5,11 @@ const { Product, Category, Tag, ProductTag } = require("../../models");
 
 // get all products
 router.get("/", async (req, res) => {
+  // find all products with associated Category and Tag data
   try {
     const products = await Product.findAll({
       include: [
+        // include the Category and Tag data for each product
         {
           model: Category,
           as: "category",
@@ -30,9 +32,12 @@ router.get("/", async (req, res) => {
 
 // get one product
 router.get("/:id", async (req, res) => {
+  // find a single product by its `id`
   try {
     const product = await Product.findByPk(req.params.id, {
+      //
       include: [
+        // include the Category and Tag data for each product
         {
           model: Category,
           as: "category",
@@ -45,6 +50,7 @@ router.get("/:id", async (req, res) => {
       ],
     });
     if (!product) {
+      // if product not found, send 404
       res.status(404).json({ message: "Product not found" });
       return;
     }
@@ -59,6 +65,7 @@ router.get("/:id", async (req, res) => {
 
 // create new product
 router.post("/", (req, res) => {
+  // assuming req.body has product data
   /* req.body should look like this...
     {
       product_name: "Basketball",
@@ -77,7 +84,7 @@ router.post("/", (req, res) => {
             tag_id,
           };
         });
-        return ProductTag.bulkCreate(productTagIdArr);
+        return ProductTag.bulkCreate(productTagIdArr); // create ProductTag records
       }
       // if no product tags, just respond
       res.status(200).json(product);
@@ -91,9 +98,11 @@ router.post("/", (req, res) => {
 
 // update product
 router.put("/:id", (req, res) => {
+  //
   // update product data
   Product.update(req.body, {
     where: {
+      // specify the product's id to update
       id: req.params.id,
     },
   })
@@ -136,7 +145,7 @@ router.put("/:id", (req, res) => {
 router.delete("/:id", async (req, res) => {
   try {
     const product = await Product.destroy({
-      where: { id: req.params.id },
+      where: { id: req.params.id }, // specify the product's id to delete
     });
     if (!product) {
       res.status(404).json({ message: "Product not found" });
